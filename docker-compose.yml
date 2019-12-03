@@ -1,0 +1,50 @@
+version: "3.3"
+
+services:
+  api:
+    image: postgrest/postgrest:v6.0.2
+    container_name: odisplay-api
+    restart: always
+    depends_on:
+      - database
+    ports:
+      - 3000:3000
+    environment:
+      PGRST_DB_URI: postgres://user:password@database:5432/database
+      PGRST_DB_SCHEMA: public
+      PGRST_DB_ANON_ROLE: user
+
+  api-overview:
+    image: swaggerapi/swagger-ui
+    container_name: odisplay-api-overview
+    depends_on:
+      - api
+    ports:
+      - 3001:8080
+    environment:
+      API_URL: http://localhost:3000
+
+  database:
+    image: postgres:12.1-alpine
+    container_name: odisplay-database
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: database
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+
+  database-manager:
+    image: adminer:4.7.5
+    container_name: odisplay-database-manager
+    restart: always
+    depends_on:
+      - database
+    ports:
+      - 3002:8080
+    environment:
+      ADMINER_DEFAULT_SERVER: database
+
+volumes:
+  data: {}
