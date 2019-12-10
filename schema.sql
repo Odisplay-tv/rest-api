@@ -23,29 +23,29 @@ SET row_security = off;
 CREATE FUNCTION public.insert_pending_pairing() RETURNS character
     LANGUAGE plpgsql
     AS $$
-DECLARE
-    ascii_numbers integer[];
-    ascii_letters integer[];
-    ascii_chars integer[];
-    code char(5);
-BEGIN
-    ascii_numbers := array(select * from generate_series(48, 57));
-    ascii_letters := array(select * from generate_series(65, 90));
-    ascii_chars := ascii_numbers || ascii_letters;
-
-    LOOP
-        SELECT array_to_string(array(
-          SELECT chr(ascii_chars[round(random() * (array_length(ascii_chars, 1) - 1)) + 1] :: integer)
-          FROM generate_series(1, 5))
-        , '')
-        INTO code;
-        BEGIN
-            INSERT INTO pending_pairings (code) VALUES (code);
-            RETURN code;
-        EXCEPTION WHEN unique_violation THEN
-        END;
-    END LOOP;
-END;
+DECLARE
+    ascii_numbers integer[];
+    ascii_letters integer[];
+    ascii_chars integer[];
+    code char(5);
+BEGIN
+    ascii_numbers := array(select * from generate_series(48, 57));
+    ascii_letters := array(select * from generate_series(65, 90));
+    ascii_chars := ascii_numbers || ascii_letters;
+
+    LOOP
+        SELECT array_to_string(array(
+          SELECT chr(ascii_chars[round(random() * (array_length(ascii_chars, 1) - 1)) + 1] :: integer)
+          FROM generate_series(1, 5))
+        , '')
+        INTO code;
+        BEGIN
+            INSERT INTO pending_pairings (code) VALUES (code);
+            RETURN code;
+        EXCEPTION WHEN unique_violation THEN
+        END;
+    END LOOP;
+END;
 $$;
 
 
