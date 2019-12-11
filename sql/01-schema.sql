@@ -1,20 +1,22 @@
---
--- PostgreSQL database dump
---
+CREATE SCHEMA IF NOT EXISTS public;
+REVOKE ALL ON ALL TABLES IN SCHEMA public FROM public;
 
--- Dumped from database version 12.1
--- Dumped by pg_dump version 12.1
+CREATE ROLE authenticator NOINHERIT LOGIN PASSWORD 'password';
+CREATE ROLE anon NOLOGIN;
+CREATE ROLE bo_user NOLOGIN;
 
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
-SET xmloption = content;
+SET client_encoding = 'UTF8';
 SET client_min_messages = warning;
+SET default_table_access_method = heap;
+SET default_tablespace = '';
+SET idle_in_transaction_session_timeout = 0;
+SET lock_timeout = 0;
 SET row_security = off;
+SET standard_conforming_strings = on;
+SET statement_timeout = 0;
+SET xmloption = content;
 
 --
 -- Name: insert_pending_pairing(); Type: FUNCTION; Schema: public; Owner: user
@@ -49,11 +51,7 @@ END;
 $$;
 
 
-ALTER FUNCTION public.insert_pending_pairing() OWNER TO "user";
-
-SET default_tablespace = '';
-
-SET default_table_access_method = heap;
+ALTER FUNCTION public.insert_pending_pairing() OWNER TO "authenticator";
 
 --
 -- Name: pending_pairings; Type: TABLE; Schema: public; Owner: user
@@ -65,7 +63,7 @@ CREATE TABLE public.pending_pairings (
 );
 
 
-ALTER TABLE public.pending_pairings OWNER TO "user";
+ALTER TABLE public.pending_pairings OWNER TO "authenticator";
 
 --
 -- Name: pending_pairings pending-pairings-unique; Type: CONSTRAINT; Schema: public; Owner: user
@@ -74,8 +72,6 @@ ALTER TABLE public.pending_pairings OWNER TO "user";
 ALTER TABLE ONLY public.pending_pairings
     ADD CONSTRAINT "pending-pairings-unique" UNIQUE (code);
 
-
 --
 -- PostgreSQL database dump complete
 --
-
